@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { LoginCredentials } from '@/types';
 import { ROUTES } from '@/constants';
 import { useAuthStore } from '@/store/authStore';
-import axios from '@/api/axios.js';
+import axios from '@/api/axios'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +16,7 @@ export default function Login() {
 
   const handleLogin = async (credentials: LoginCredentials) => {
     setIsLoading(true);
-    
-     try {
+    try {
       const res = await axios.post("/users/login", credentials);
       const { user, token } = res.data;
 
