@@ -92,6 +92,9 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.get("/test", (req, res) => {
+  res.send("Backend is working ✅");
+});
 
 // 🔐 READ ROUTE
 router.get("/profile", authMiddleware, async (req, res) => {
