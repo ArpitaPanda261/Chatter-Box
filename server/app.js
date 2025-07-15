@@ -34,13 +34,19 @@ app.use("/api/users", userRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.join(__dirname, "../client/dist");
+console.log("STATIC FILES FROM:", clientDistPath);
 
 app.use(express.static(clientDistPath));
 
-// ✅ Catch-all route — this is the issue! 🔥
-app.get("/*", (req, res) => {
+// ✅ Catch-all route — safe version with debug logging
+app.get('/{*any}', (req, res, next) => {
+  // If the request starts with /api, skip this route
+  if (req.path.startsWith("/api")) return next();
+
   res.sendFile(path.join(clientDistPath, "index.html"));
 });
+
+
 
 // ✅ Start server
 const PORT = process.env.PORT || 3000;
