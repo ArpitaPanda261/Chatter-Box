@@ -11,30 +11,28 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// ✅ CORS configuration
 app.use(cors({
-  origin: ["http://localhost:8080", "http://192.168.31.150:8080", process.env.FRONTEND_URL],
+  origin: ["http://localhost:8080", process.env.FRONTEND_URL],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// ✅ API Routes
 app.use("/api/users", userRoutes);
 
-// ✅ Serve static frontend (only in production)
+// ✅ Serve static files
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.join(__dirname, "../client/dist");
 
 app.use(express.static(clientDistPath));
 
-app.get("*", (req, res) => {
+// ✅ Fallback for SPA
+app.get("/*", (req, res) => {
   res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
