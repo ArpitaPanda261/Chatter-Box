@@ -2,8 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
 import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
@@ -11,7 +9,6 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// ✅ CORS config
 app.use(
   cors({
     origin: ["https://chatter-box-web06.netlify.app", process.env.FRONTEND_URL],
@@ -21,34 +18,16 @@ app.use(
   })
 );
 
-// ✅ MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// ✅ API
 app.use("/api/users", userRoutes);
-
-// ✅ Static files (only in production)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const clientDistPath = path.join(__dirname, "../client/dist");
-
-app.use(express.static(clientDistPath));
-
-// ✅ Catch-all for React Router (important fix here ↓↓↓)
-app.get("/{*any}", (req, res, next) => {
-  if (req.path.startsWith("/api")) return next();
-  res.sendFile(path.join(clientDistPath, "index.html"));
-});
 
 app.get("/", (req, res) => {
   res.send("API is running ✅");
 });
-
-
-// ✅ Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
