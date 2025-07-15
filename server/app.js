@@ -14,7 +14,7 @@ app.use(express.json());
 // ✅ CORS config
 app.use(
   cors({
-    origin: ["http://localhost:8080", process.env.FRONTEND_URL],
+    origin: ["https://chatter-box-web06.netlify.app", process.env.FRONTEND_URL],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -30,22 +30,22 @@ mongoose
 // ✅ API
 app.use("/api/users", userRoutes);
 
-// Static files (only in production)
+// ✅ Static files (only in production)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.join(__dirname, "../client/dist");
-console.log("STATIC FILES FROM:", clientDistPath);
 
 app.use(express.static(clientDistPath));
 
-// ✅ Catch-all route — safe version with debug logging
-app.get('/{*any}', (req, res, next) => {
-  // If the request starts with /api, skip this route
+// ✅ Catch-all for React Router (important fix here ↓↓↓)
+app.get("/{*any}", (req, res, next) => {
   if (req.path.startsWith("/api")) return next();
-
   res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
+app.get("/", (req, res) => {
+  res.send("API is running ✅");
+});
 
 
 // ✅ Start server
