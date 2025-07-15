@@ -30,7 +30,7 @@ mongoose
 // ✅ API
 app.use("/api/users", userRoutes);
 
-// ✅ Static files (only in production)
+// Static files (only in production)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.join(__dirname, "../client/dist");
