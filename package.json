@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "build": "npm run build --prefix client",
-    "start": "npm run start --prefix server"
+    "start": "node server/app.js",
+    "build": "cd client && npm install && npm run build"
   },
   "devDependencies": {
     "concurrently": "^9.2.0"
