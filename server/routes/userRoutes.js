@@ -18,9 +18,9 @@ router.post("/login", async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
-console.log("Password match:", isMatch); // ADD THIS
-console.log("Stored hash:", existingUser.password);
-console.log("Entered password:", password);
+    console.log("Password match:", isMatch); // ADD THIS
+    console.log("Stored hash:", existingUser.password);
+    console.log("Entered password:", password);
 
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -33,10 +33,9 @@ console.log("Entered password:", password);
     );
 
     console.log("Trying login for:", email);
-console.log("User found:", existingUser);
-console.log("Entered password:", password);
-console.log("Stored hash:", existingUser?.password);
-
+    console.log("User found:", existingUser);
+    console.log("Entered password:", password);
+    console.log("Stored hash:", existingUser?.password);
 
     res.status(200).json({
       message: "Login successful",
@@ -53,8 +52,6 @@ console.log("Stored hash:", existingUser?.password);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
-
 
 // 🆕 SIGNUP ROUTE
 router.post("/signup", async (req, res) => {
@@ -98,12 +95,14 @@ router.get("/test", (req, res) => {
 
 // 🔐 READ ROUTE
 router.get("/profile", authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.userId).select("-password");
-        res.json(user);
-    } catch (err) {
-        res.status(500).json({ message: "Error fetching profile", error: err.message });
-    }
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    res.json(user);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching profile", error: err.message });
+  }
 });
 
 export default router;

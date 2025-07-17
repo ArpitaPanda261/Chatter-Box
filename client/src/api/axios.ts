@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/authStore";
 
 const instance = axios.create({
     baseURL: "https://chatter-box-server-8iqs.onrender.com/api", // This is the Express server
-    withCredentials: false,
+    withCredentials: true,
 });
 
 instance.interceptors.request.use((config) => {

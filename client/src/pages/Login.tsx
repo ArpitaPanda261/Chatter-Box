@@ -1,26 +1,25 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { useToast } from '@/hooks/use-toast';
-import type { LoginCredentials } from '@/types';
-import { ROUTES } from '@/constants';
-import { useAuthStore } from '@/store/authStore';
-import axios from '@/api/axios'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { useToast } from "@/hooks/use-toast";
+import type { LoginCredentials } from "@/types";
+import { ROUTES } from "@/constants";
+import { useAuthStore } from "@/store/authStore";
+import axios from "@/api/axios";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { login } = useAuthStore();
-
   const handleLogin = async (credentials: LoginCredentials) => {
     setIsLoading(true);
     try {
       const res = await axios.post("/users/login", credentials);
       const { user, token } = res.data;
 
-      login(user, token); // Store in Zustand
+      login(user, token);
 
       toast({
         title: "Welcome back!",
@@ -29,9 +28,23 @@ export default function Login() {
 
       navigate(ROUTES.CHAT, { replace: true });
     } catch (error) {
+      console.error("❌ Axios error:", error);
+      if (error?.response) {
+        console.error(
+          "❌ Server responded:",
+          error.response.status,
+          error.response.data
+        );
+      } else if (error?.request) {
+        console.error("❌ No response from server:", error.request);
+      } else {
+        console.error("❌ Error setting up request:", error.message);
+      }
+
       toast({
         title: "Login failed",
-        description: error?.response?.data?.message || "Something went wrong.",
+        description:
+          "Could not reach the server. Please check CORS or server status.",
         variant: "destructive",
       });
     } finally {
@@ -73,7 +86,7 @@ export default function Login() {
           className="mt-8 text-center"
         >
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <button
               onClick={() => navigate(ROUTES.SIGNUP)}
               className="text-primary hover:underline font-medium"
